@@ -15,13 +15,11 @@ def editor():
     return render_template('editor.html')
 
 
-
 @app.route('/submit', methods=['Post'])
 def submit_data():
     data = request.json
     words = re.findall(r'\b\w+\b', data.lower())
     word_counts = Counter(words)
-    # print(f'Word count: {word_counts}')
     email = extracted_email(data)
     phoneNumber = extracted_phoneNumber(data)
     print(f'Data: {data}, Email: {email}, Phone: {phoneNumber}')
@@ -44,5 +42,6 @@ def extracted_phoneNumber(data):
 
 
 
+main
 if __name__ == '__main__':
     app.run(debug=True)
