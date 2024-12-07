@@ -1,6 +1,7 @@
 from flask import Flask, request, render_template, jsonify
 from collections import Counter
 import re
+import json
 
 app = Flask(__name__)
 
@@ -13,7 +14,6 @@ def home():
 @app.route('/editor')
 def editor():
     return render_template('editor.html')
-
 
 
 @app.route('/submit', methods=['Post'])
@@ -41,8 +41,21 @@ def extracted_phoneNumber(data):
         return phone[0]
     return None
 
+@app.route("/generate", methods=["GET"])
+def generate_pdf():
+    resume_data = None
+    with open("example.json", "r") as file:
+        resume_data = file.read()
 
+    return render_template('generate.html', resume_json=resume_data)
 
+@app.route("/template", methods=["GET"])
+def template():
+    resume_data = None
+    with open("example.json", "r") as file:
+        resume_data = json.load(file)
+
+    return render_template('template.html', resume=resume_data)
 
 if __name__ == '__main__':
     app.run(debug=True)
