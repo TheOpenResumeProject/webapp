@@ -41,6 +41,13 @@ def extracted_phoneNumber(data):
         return phone[0]
     return None
 
+@app.route("/validate", methods=["POST"])
+def validate():
+    data = request.get_json();
+
+    #TODO: validate
+    return json.dumps(data)
+
 @app.route("/generate", methods=["GET"])
 def generate_pdf():
     resume_data = None
@@ -48,6 +55,12 @@ def generate_pdf():
         resume_data = file.read()
 
     return render_template('generate.html', resume_json=resume_data)
+
+@app.route("/render", methods=["POST"])
+def render():
+    resume_data = request.get_json()
+
+    return render_template('template.html', resume=resume_data)
 
 @app.route("/template", methods=["GET"])
 def template():
