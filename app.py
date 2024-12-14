@@ -60,15 +60,16 @@ def generate_pdf():
 def render():
     resume_data = request.get_json()
 
-    return render_template('template.html', resume=resume_data)
+    return render_template('template2.html', resume=resume_data)
 
 @app.route("/template", methods=["GET"])
 def template():
+    # this is the initial load.
     resume_data = None
     with open("example.json", "r") as file:
         resume_data = json.load(file)
 
-    return render_template('template.html', resume=resume_data)
+    return render_template('template2.html', resume=resume_data)
 
 if __name__ == '__main__':
     app.run(debug=True)
