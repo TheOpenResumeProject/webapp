@@ -1,0 +1,155 @@
+<html>
+	<head>
+		<title>{{ resume['meta']['name']}} - Resume</title>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet">
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                color: #333;
+            }
+            h1, h2, h3, h4, h5 {
+                color: #2c3e50;
+            }
+            .section-title {
+                margin-bottom: 1rem;
+                font-size: 1.3rem;
+                font-weight: bold;
+                color: #2c3e50;
+            }
+            .divider {
+                border-top: 2px solid #ecf0f1;
+                margin: 1rem 0;
+            }
+            .card {
+                border: 1px solid #ecf0f1;
+                margin-bottom: 1rem;
+                padding: 1.5rem;
+                border-radius: 8px;
+                background-color: #f9f9f9;
+            }
+            .card-header {
+                font-weight: bold;
+                font-size: 1.2rem;
+            }
+            .card-body {
+                font-size: 0.9rem;
+            }
+            .experience-list, .project-list {
+                list-style: none;
+                padding-left: 0;
+            }
+            .experience-list li, .project-list li {
+                margin: 0.5rem 0;
+                padding-left: 1rem;
+                position: relative;
+            }
+            .experience-list li::before, .project-list li::before {
+                content: "•";
+                position: absolute;
+                left: 0;
+                font-size: 1.5rem;
+                color: #2980b9;
+            }
+            .skills-list {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 0.5rem;
+            }
+            .skill-item {
+                background-color: #2980b9;
+                color: white;
+                padding: 0.5rem 1rem;
+                border-radius: 20px;
+                font-size: 0.9rem;
+            }
+        </style>
+	</head>
+	<body>
+		<div class="container py-5">
+            <!-- Personal Info -->
+            <div class="row mb-4">
+                <div class="col-12 text-center">
+                    <h1>{{ resume['data']['personal']['name'] }}</h1>
+                    <p>{{ resume['data']['personal']['email'] }} | {{ resume['data']['personal']['phone_number'] }}</p>
+                    <p>{{ resume['data']['personal']['city']}}, {{ resume['data']['personal']['state']}}</p>
+                </div>
+            </div>
+
+            <!-- Education Section -->
+            <div class="card">
+                <div class="card-header section-title">Education</div>
+                <div class="card-body">
+                    {% for each in resume['data']['education'] %}
+                        <div class="d-flex justify-content-between mb-2">
+                            <div><strong>{{ each['institution'] }}</strong></div>
+                            <div>{{ "{:02}".format(each['end_month']) }} / {{ each['end_year'] }}</div>
+                        </div>
+                        <div class="d-flex justify-content-between mb-2">
+                            <div><i>{{ each['degree_title'] }} in {{ each['major'] }}</i></div>
+                            <div>GPA: {{ each['gpa'] }}</div>
+                        </div>
+                        <hr class="divider">
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Professional Experience Section -->
+            <div class="card">
+                <div class="card-header section-title">Professional Experience</div>
+                <div class="card-body">
+                    {% for position in resume['data']['experience'] %}
+                        <div class="mb-4">
+                            <div class="d-flex justify-content-between">
+                                <div><strong>{{ position['employer'] }}</strong></div>
+                                <div>{{ position['employer_city'] }}, {{ position['employer_state'] }}</div>
+                            </div>
+                            <div><i>{{ position['title'] }}</i></div>
+                            <ul class="experience-list">
+                                {% for item in position['description'] %}
+                                    <li>{{ item }}</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        <hr class="divider">
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Projects Section -->
+            <div class="card">
+                <div class="card-header section-title">Projects</div>
+                <div class="card-body">
+                    {% for project in resume['data']['projects'] %}
+                        <div class="mb-4">
+                            <div class="d-flex justify-content-between">
+                                <div><strong>{{ project['title'] }}</strong></div>
+                                <div><a href="{{ project['url'] }}" target="_blank">Project URL</a></div>
+                            </div>
+                            <ul class="project-list">
+                                {% for item in project['description'] %}
+                                    <li>{{ item }}</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        <hr class="divider">
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Skills Section -->
+            <div class="card">
+                <div class="card-header section-title">Skills</div>
+                <div class="card-body">
+                    <div class="skills-list">
+                        {% for skill in resume['data']['skill'] %}
+                            <span class="skill-item">{{ skill['name'] | capitalize }}</span>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+	</body>
+</html>
