@@ -11,8 +11,8 @@ def home():
     return render_template('index.html')
 
 
-@app.route('/editor')
-def editor():
+@app.route('/editor1')
+def editor1():
     return render_template('editor.html')
 
 
@@ -48,8 +48,8 @@ def validate():
     #TODO: validate
     return json.dumps(data)
 
-@app.route("/generate", methods=["GET"])
-def generate_pdf():
+@app.route("/editor", methods=["GET"])
+def editor():
     resume_data = None
     with open("example.json", "r") as file:
         resume_data = file.read()
