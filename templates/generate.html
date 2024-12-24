@@ -24,7 +24,7 @@
                             font-family: Courier New,Courier,Lucida Sans Typewriter,Lucida Typewriter,monospace;">{{ resume_json }}</textarea>
                     </div>
 				    <div class="form-group m-2">
-						<label for="resumeTemplatePicked" class="form-label">Pick a template</label>
+						<label for="resumeTemplatePicked" class="form-label">Select a Template</label>
 						<select class="form-select" aria-label="Pick a Template" id="resumeTemplatePicked">
 						  <option value="1">template 1</option>
 						  <option value="2">template 2</option>
@@ -51,6 +51,8 @@
 
     function getRenderedResume(e){
       const textAreaElem = document.getElementById("resumeDataInput");
+	  const templatePickerElem = document.getElementById("resumeTemplatePicked");
+	  const templateId = templatePickerElem.value;
       const data = textAreaElem.value;
       const apiUrl = "{{ url_for('validate') }}";
       return fetch(apiUrl, {
@@ -66,9 +68,13 @@
         })
         .then(data => {
              const renderURL = "{{ url_for('render') }}";
+			 const renderData = {
+				"content": data,
+				"template_id": templateId,
+			 };
              return fetch(renderURL, {
                 method: "POST",
-                body: JSON.stringify(data),
+                body: JSON.stringify(renderData),
                 headers: {"Content-Type": "application/json"}
             }).then(resp => {
                 return resp.text();

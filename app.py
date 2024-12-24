@@ -90,9 +90,15 @@ def render_pdf():
 
 @app.route("/render", methods=["POST"])
 def render():
-    resume_data = request.get_json()
+    request_data = request.get_json()
+    template_id = request_data.get("template_id", 1)
+    resume_data = request_data["content"]
+
+    template = "template.html"
+    if template_id == "2":
+        template = "template2.html"
     
-    return render_template('template2.html', resume=resume_data)
+    return render_template(template, resume=resume_data)
 
 @app.route("/template", methods=["GET"])
 def template():
