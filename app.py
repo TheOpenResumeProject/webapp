@@ -1,7 +1,11 @@
 from flask import Flask, request, render_template, jsonify
+from flask import make_response
 from collections import Counter
 import re
 import json
+import os
+
+import pdfkit
 
 app = Flask(__name__)
 
@@ -55,10 +59,39 @@ def editor():
 
     return render_template('generate.html', resume_json=resume_data)
 
+
+@app.route("/render/pdf", methods=["POST"])
+def render_pdf():
+    resume_data = request.get_json()
+
+    css_path = 'static/css/styles.css'
+    css_path_abs = os.path.abspath(css_path)
+
+    rendered_resume = render_template('template.html', resume=resume_data, css_path=css_path_abs)
+    path_to_pdf =  "generated_resume.pdf"
+
+    options = {
+        'no-images': '',
+        'javascript-delay': '2000',
+        'enable-local-file-access': '',
+        'load-error-handling': 'ignore',
+        'enable-external-links': '',  # Allow external CSS links to be loaded
+    }
+
+    pdf = pdfkit.from_string(rendered_resume, False, options=options)
+    # Create a response object
+    response = make_response(pdf)
+    
+    # Set content-type to application/pdf for the browser to interpret the response as a PDF
+    response.headers['Content-Type'] = 'application/pdf'
+    response.headers['Content-Disposition'] = 'inline; filename=generated_resume.pdf'
+    
+    return response
+
 @app.route("/render", methods=["POST"])
 def render():
     resume_data = request.get_json()
-
+    
     return render_template('template2.html', resume=resume_data)
 
 @app.route("/template", methods=["GET"])
@@ -67,7 +100,7 @@ def template():
     resume_data = None
     with open("example.json", "r") as file:
         resume_data = json.load(file)
-
+    
     return render_template('template2.html', resume=resume_data)
 
 if __name__ == '__main__':

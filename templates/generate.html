@@ -7,9 +7,9 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet">
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-	<script src="https://cdn.jsdelivr.net/npm/dompurify/dist/purify.min.js"></script>
-	<script src="https://unpkg.com/jspdf@2.5.2/dist/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dompurify/dist/purify.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
 </head>
 
 <body>
@@ -19,9 +19,9 @@
                 <h3>Editor</h3>
                 <form>
                     <div class="form-group">
-                        <textarea class="form-control" id="resumeDataInput" rows="10" 
- 							style="height:85vh; width:-webkit-fill-available; border:1px dotted black;border-radius:5px;
-							font-family: Courier New,Courier,Lucida Sans Typewriter,Lucida Typewriter,monospace;">{{ resume_json }}</textarea>
+                        <textarea class="form-control" id="resumeDataInput" rows="10"
+                             style="height:85vh; width:-webkit-fill-available; border:1px dotted black;border-radius:5px;
+                            font-family: Courier New,Courier,Lucida Sans Typewriter,Lucida Typewriter,monospace;">{{ resume_json }}</textarea>
                     </div>
                     <div class="form-group m-2">
                         <button type="button" class="btn btn-primary" id="applyButton">Apply Changes</button>
@@ -30,11 +30,11 @@
             </div>
             <div class="col-7">
                 <h3>Generated Resume</h3>
-                <iframe src="{{ url_for('template') }}" title="Generated Resume" id="renderBoxElem" 
+                <iframe src="{{ url_for('template') }}" title="Generated Resume" id="renderBoxElem"
                  style="height:85vh; width:800px;border:1px dotted black;border-radius:5px;"></iframe>
-				<div class="form-group m-2">
-					<button type="button" class="btn btn-secondary" id="generatePDFButton">Save to PDF</button>
-				</div>
+                <div class="form-group m-2">
+                    <button type="button" class="btn btn-secondary" id="generatePDFButton">Save to PDF</button>
+                </div>
             </div>
         </div>
     </div>
@@ -42,70 +42,100 @@
 <script>
     const applyBtnElem = document.getElementById("applyButton");
 
-	applyBtnElem.addEventListener("click", function (e){
-	  const textAreaElem = document.getElementById("resumeDataInput");
-	  const data = textAreaElem.value;
-	  const apiUrl = "{{ url_for('validate') }}";
-	  fetch(apiUrl, {method: "POST",
-				body: data,
-				headers: { "Content-Type": "application/json", },
-			})
-		.then(response => {
-		  if (!response.ok) {
-			throw new Error('Network response was not ok');
-		  }
-		  return response.json();
-		})
-		.then(data => {
-			 const renderURL = "{{ url_for('render') }}";
-			 fetch(renderURL, {
-					method: "POST",
-					body: JSON.stringify(data),
-					headers: {"Content-Type": "application/json"}
-				}
+    function getRenderedResume(e){
+      const textAreaElem = document.getElementById("resumeDataInput");
+      const data = textAreaElem.value;
+      const apiUrl = "{{ url_for('validate') }}";
+      return fetch(apiUrl, {
+          method: "POST",
+        body: data,
+        headers: { "Content-Type": "application/json", },
+       })
+       .then(response => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          return response.json();
+        })
+        .then(data => {
+             const renderURL = "{{ url_for('render') }}";
+             return fetch(renderURL, {
+                method: "POST",
+                body: JSON.stringify(data),
+                headers: {"Content-Type": "application/json"}
+            }).then(resp => {
+                return resp.text();
+            }).then(text => {
+                    const renderBoxElem = document.getElementById("renderBoxElem");
+                    const rendered = text;
+                    filledOutResum = text;
+                    renderBoxElem.srcdoc = rendered;
 
-			 ).then(resp => {
-				return resp.text();
-			 })
-			 .then(text => {
-					const renderBoxElem = document.getElementById("renderBoxElem");
-					const rendered = text;
-					renderBoxElem.srcdoc = rendered;
-				}
-			 )
-			 .catch(err => { console.log("failed to render");})
-		})
-		.catch(error => {
-		  console.error('Error:', error);
-		});
-	});
+                    return text;
+                }
+             )
+             .catch(err => { console.log("failed to render");})
+        })
+        .catch(error => {
+          console.error('Error:', error);
+        });
+
+    }
+    applyBtnElem.addEventListener("click", getRenderedResume);
 
     const generatePDFBtnElem = document.getElementById("generatePDFButton");
-	generatePDFBtnElem.addEventListener("click", function(e){
-		//using jsPDF to generate it on the client-side
-		const { jsPDF } = window.jspdf;
-		const doc = new jsPDF();
-		const iframe = document.getElementById('renderBoxElem');
-		const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
-		const iframeContent = iframeDoc.body;
+    generatePDFBtnElem.addEventListener("click", function(e) {
+      const textAreaElem = document.getElementById("resumeDataInput");
+      const data = textAreaElem.value;
 
-		html2canvas(iframeContent, {
-			useCORS: true,  // If your iframe content is from a different origin, this might help with CORS
-			logging: true,  // For debugging purposes
-			scrollX: 0,  // Prevent any horizontal scroll
-			scrollY: -window.scrollY,  // Prevent any vertical scroll
-			width: iframeContent.scrollWidth,  // Adjust width to match content
-			height: iframeContent.scrollHeight,  // Adjust height to match content
-		}).then(canvas => {
-			const imgData = canvas.toDataURL('image/png');
-			const doc = new jsPDF();
-			doc.addImage(imgData, "PNG", 10, 10, 180, 0);
-			doc.save("resume_generated.pdf");
-		}).catch(err => {
-			console.error("Error rendering iframe content to canvas:", err);
-		});
+      // Prepare the data in JSON format for the validation API
+      const apiUrl = "{{ url_for('validate') }}";
 
-	});
+      fetch(apiUrl, {
+        method: "POST",
+        body: JSON.stringify(data), // Ensure data is wrapped in an object
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.json();
+      })
+      .then(validatedData => {
+        const renderURL = "{{ url_for('render_pdf') }}";
+
+        // Now send the validated data to the render PDF API
+        return fetch(renderURL, {
+          method: "POST",
+          body: validatedData,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        })
+        .then(resp => resp.blob())
+        .then(pdfBlob => {
+            const pdfUrl = URL.createObjectURL(pdfBlob);
+
+            const link = document.createElement('a');
+            link.href = pdfUrl;
+            link.download = "generated_resume.pdf";  // Filename for the download
+            link.click();  // Trigger the download
+
+            URL.revokeObjectURL(pdfUrl);
+        })
+        .catch(err => {
+          console.error("Failed to render PDF:", err);
+        });
+      })
+      .catch(error => {
+        console.error('Error:', error);
+      });
+    });
+
+
 </script>
 
 </html>
