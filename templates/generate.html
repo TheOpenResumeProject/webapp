@@ -13,10 +13,15 @@
 </head>
 
 <body>
+	<nav class="navbar navbar-light bg-light">
+	  <a class="navbar-brand mx-4" href="{{ url_for('home') }}">
+		<span class="text-muted"> Open</span><span>Resume</span>
+	  </a>
+	</nav>
     <div class="container">
         <div class="row">
             <div class="col-5">
-                <h3>Editor</h3>
+                <h4>Edit</h4>
                 <form>
                     <div class="form-group">
                         <textarea class="form-control" id="resumeDataInput" rows="10"
@@ -36,7 +41,7 @@
                 </form>
             </div>
             <div class="col-7">
-                <h3>Generated Resume</h3>
+                <h4>Generated Resume</h4>
                 <iframe src="{{ url_for('template') }}" title="Generated Resume" id="renderBoxElem"
                  style="height:85vh; width:800px;border:1px dotted black;border-radius:5px;"></iframe>
                 <div class="form-group m-2">
@@ -100,6 +105,7 @@
     generatePDFBtnElem.addEventListener("click", function(e) {
       const textAreaElem = document.getElementById("resumeDataInput");
       const data = textAreaElem.value;
+	  generatePDFBtnElem.disabled = true;
 
       // Prepare the data in JSON format for the validation API
       const apiUrl = "{{ url_for('validate') }}";
@@ -138,6 +144,7 @@
             link.click();  // Trigger the download
 
             URL.revokeObjectURL(pdfUrl);
+	  		generatePDFBtnElem.disabled = false;
         })
         .catch(err => {
           console.error("Failed to render PDF:", err);
