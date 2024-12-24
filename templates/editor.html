@@ -26,11 +26,9 @@
             if (fileData){
                 fileContentElement.textContent = `Uploaded file's Content: ${JSON.parse(fileData)}`;
                 //fileContentElement.textContent = `Uploaded file's Content: ${fileData}`;
-            
             } else {
                 fileContentElement.textContent = 'No file uploaded';
             }
-
             document.getElementById('sendToBackEnd').addEventListener('click', function(){
                 fetch('/submit',{
                     method: 'POST',
