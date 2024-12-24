@@ -20,9 +20,16 @@
                 <form>
                     <div class="form-group">
                         <textarea class="form-control" id="resumeDataInput" rows="10"
-                             style="height:85vh; width:-webkit-fill-available; border:1px dotted black;border-radius:5px;
+                             style="height:75vh; width:-webkit-fill-available; border:1px dotted black;border-radius:5px;
                             font-family: Courier New,Courier,Lucida Sans Typewriter,Lucida Typewriter,monospace;">{{ resume_json }}</textarea>
                     </div>
+				    <div class="form-group m-2">
+						<label for="resumeTemplatePicked" class="form-label">Pick a template</label>
+						<select class="form-select" aria-label="Pick a Template" id="resumeTemplatePicked">
+						  <option value="1">template 1</option>
+						  <option value="2">template 2</option>
+						</select>
+					</div>
                     <div class="form-group m-2">
                         <button type="button" class="btn btn-primary" id="applyButton">Apply Changes</button>
                     </div>
@@ -47,10 +54,10 @@
       const data = textAreaElem.value;
       const apiUrl = "{{ url_for('validate') }}";
       return fetch(apiUrl, {
-          method: "POST",
+      	method: "POST",
         body: data,
         headers: { "Content-Type": "application/json", },
-       })
+      })
        .then(response => {
           if (!response.ok) {
             throw new Error('Network response was not ok');
