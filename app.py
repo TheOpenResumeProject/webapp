@@ -79,7 +79,7 @@ def render_pdf():
     }
 
     pdf = pdfkit.from_string(rendered_resume, False, options=options)
-    # Create a response object
+    # TODO: add metadata here 
     response = make_response(pdf)
     
     # Set content-type to application/pdf for the browser to interpret the response as a PDF

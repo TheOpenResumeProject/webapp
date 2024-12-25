@@ -24,9 +24,14 @@
                 <h4>Edit</h4>
                 <form>
                     <div class="form-group">
-                        <textarea class="form-control" id="resumeDataInput" rows="10"
+                        <textarea class="form-control" id="textbox" rows="10"
                              style="height:75vh; width:-webkit-fill-available; border:1px dotted black;border-radius:5px;
                             font-family: Courier New,Courier,Lucida Sans Typewriter,Lucida Typewriter,monospace;">{{ resume_json }}</textarea>
+						<span id="stats">
+						  <span id="char-count">0</span> chars │
+						  <span id="word-count">0</span> words │
+						  <span id="line-count">0</span> lines
+						</span>
                     </div>
 				    <div class="form-group m-2">
 						<label for="resumeTemplatePicked" class="form-label">Select a Template</label>
@@ -55,7 +60,7 @@
     const applyBtnElem = document.getElementById("applyButton");
 
     function getRenderedResume(e){
-      const textAreaElem = document.getElementById("resumeDataInput");
+      const textAreaElem = document.getElementById("textbox");
 	  const templatePickerElem = document.getElementById("resumeTemplatePicked");
 	  const templateId = templatePickerElem.value;
       const data = textAreaElem.value;
@@ -103,7 +108,7 @@
 
     const generatePDFBtnElem = document.getElementById("generatePDFButton");
     generatePDFBtnElem.addEventListener("click", function(e) {
-      const textAreaElem = document.getElementById("resumeDataInput");
+      const textAreaElem = document.getElementById("textbox");
       const data = textAreaElem.value;
 	  generatePDFBtnElem.disabled = true;
 
@@ -157,5 +162,6 @@
 
 
 </script>
+<script src="{{ url_for('static', filename='js/text_editor.js') }}"></script>
 
 </html>
