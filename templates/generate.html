@@ -7,17 +7,18 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/styles.css') }}" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/dompurify/dist/purify.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
 </head>
 
 <body>
-	<nav class="navbar navbar-light bg-light">
-	  <a class="navbar-brand mx-4" href="{{ url_for('home') }}">
-		<span class="text-muted"> Open</span><span>Resume</span>
-	  </a>
-	</nav>
+    <nav class="navbar navbar-light bg-light">
+      <a class="navbar-brand mx-4" href="{{ url_for('home') }}">
+        <span class="text-muted"> Open</span><span>Resume</span>
+      </a>
+    </nav>
     <div class="container">
         <div class="row">
             <div class="col-5">
@@ -25,21 +26,26 @@
                 <form>
                     <div class="form-group">
                         <textarea class="form-control" id="textbox" rows="10"
-                             style="height:75vh; width:-webkit-fill-available; border:1px dotted black;border-radius:5px;
+                             style="height:60vh; width:-webkit-fill-available; border:1px dotted black;border-radius:5px;
                             font-family: Courier New,Courier,Lucida Sans Typewriter,Lucida Typewriter,monospace;">{{ resume_json }}</textarea>
-						<span id="stats">
-						  <span id="char-count">0</span> chars │
-						  <span id="word-count">0</span> words │
-						  <span id="line-count">0</span> lines
-						</span>
+                        <span id="stats">
+                          <span id="char-count">0</span> chars │
+                          <span id="word-count">0</span> words │
+                          <span id="line-count">0</span> lines
+                        </span>
                     </div>
-				    <div class="form-group m-2">
-						<label for="resumeTemplatePicked" class="form-label">Select a Template</label>
-						<select class="form-select" aria-label="Pick a Template" id="resumeTemplatePicked">
-						  <option value="1">template 1</option>
-						  <option value="2">template 2</option>
-						</select>
-					</div>
+                    <div class="form-group m-2">
+                        <label for="resumeTemplatePicked" class="form-label">Select a Template</label>
+                        <div class="row">
+                            <!-- TODO: grab the available templates from an endpoint -->
+                            <div class="col-4 col-sm-3 col-md-3">
+                              <img src="{{ url_for('static', filename='images/th1.png') }}" alt="Template 1" class="img-thumbnail" data-image-id="2">
+                            </div>
+                            <div class="col-4 col-sm-3 col-md-3">
+                              <img src="{{ url_for('static', filename='images/th2.png') }}" alt="Template 1" class="img-thumbnail" data-image-id="1">
+                            </div>
+                        </div>
+                    </div>
                     <div class="form-group m-2">
                         <button type="button" class="btn btn-primary" id="applyButton">Apply Changes</button>
                     </div>
@@ -48,7 +54,7 @@
             <div class="col-7">
                 <h4>Generated Resume</h4>
                 <iframe src="{{ url_for('template') }}" title="Generated Resume" id="renderBoxElem"
-                 style="height:85vh; width:800px;border:1px dotted black;border-radius:5px;"></iframe>
+                 style="height:80vh; width:800px;border:1px dotted black;border-radius:5px;"></iframe>
                 <div class="form-group m-2">
                     <button type="button" class="btn btn-secondary" id="generatePDFButton">Save to PDF</button>
                 </div>
@@ -58,15 +64,15 @@
 </body>
 <script>
     const applyBtnElem = document.getElementById("applyButton");
+    let templateSelected = 1;
 
     function getRenderedResume(e){
       const textAreaElem = document.getElementById("textbox");
-	  const templatePickerElem = document.getElementById("resumeTemplatePicked");
-	  const templateId = templatePickerElem.value;
+      const templateId = templateSelected;
       const data = textAreaElem.value;
       const apiUrl = "{{ url_for('validate') }}";
       return fetch(apiUrl, {
-      	method: "POST",
+        method: "POST",
         body: data,
         headers: { "Content-Type": "application/json", },
       })
@@ -78,10 +84,10 @@
         })
         .then(data => {
              const renderURL = "{{ url_for('render') }}";
-			 const renderData = {
-				"content": data,
-				"template_id": templateId,
-			 };
+             const renderData = {
+                "content": data,
+                "template_id": templateId,
+             };
              return fetch(renderURL, {
                 method: "POST",
                 body: JSON.stringify(renderData),
@@ -110,7 +116,7 @@
     generatePDFBtnElem.addEventListener("click", function(e) {
       const textAreaElem = document.getElementById("textbox");
       const data = textAreaElem.value;
-	  generatePDFBtnElem.disabled = true;
+      generatePDFBtnElem.disabled = true;
 
       // Prepare the data in JSON format for the validation API
       const apiUrl = "{{ url_for('validate') }}";
@@ -149,7 +155,7 @@
             link.click();  // Trigger the download
 
             URL.revokeObjectURL(pdfUrl);
-	  		generatePDFBtnElem.disabled = false;
+            generatePDFBtnElem.disabled = false;
         })
         .catch(err => {
           console.error("Failed to render PDF:", err);
@@ -160,6 +166,18 @@
       });
     });
 
+    document.querySelectorAll('.img-thumbnail').forEach(image => {
+      image.addEventListener('click', function() {
+      // Get the selected image source (src or any other attribute)
+      const selectedImageSrc = this.src;
+      
+      // Update the displayed value (this could be a hidden input, or any element)
+      document.querySelectorAll('.img-thumbnail').forEach(img => img.classList.remove('selected'));
+      this.classList.add('selected');
+
+      templateSelected = this.getAttribute('data-image-id');
+    });
+  });
 
 </script>
 <script src="{{ url_for('static', filename='js/text_editor.js') }}"></script>
