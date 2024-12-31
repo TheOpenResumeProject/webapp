@@ -4,9 +4,7 @@ import re
 import json
 
 
-
 app = Flask(__name__)
-
 
 
 @app.route("/")
@@ -21,30 +19,20 @@ def editor():
 
 @app.route('/submit', methods=['Post'])
 def submit_data():
-    from par import extracted_email, extracted_phoneNumber, extracted_name
+    from par import extracted_email, extracted_phoneNumber, extracted_name, extracted_education, extracted_wrkexp, extracted_summary
     data = request.json
     words = re.findall(r'\b\w+\b', data.lower())
     word_counts = Counter(words)
-    # print(f'Word count: {word_counts}')
     email = extracted_email(data)
     phoneNumber = extracted_phoneNumber(data)
     name = extracted_name(data)
-    print(f'Data: {words}, Email: {email}, Phone: {phoneNumber}, Name:{name}')
-    return jsonify({"received_data": data, "email": email, "phone": phoneNumber, "name": name})
+    education = extracted_education(data)
+    work = extracted_wrkexp(data)
+    summary = extracted_summary(data)
+    print(f'Data: {data} , Email: {email}, Phone: {phoneNumber}, Name:{name}, Education: {education}, Summary : {summary}, Work Experience : {work}')
+    return jsonify({"received_data": data, "email": email, "phone": phoneNumber})
 
-'''
-def extracted_email(data):
-    email = re.findall("[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+@[a-z]+.{4}", data.lower())
-    if email:
-        return email[0]
-    return None
 
-def extracted_phoneNumber(data):
-    phone = re.findall(r'\d{3}\W?\d{3}\W?\d{4}', data.lower())
-    if phone:
-        return phone[0]
-    return None
-'''
 
 @app.route("/generate", methods=["GET"])
 def generate_pdf():

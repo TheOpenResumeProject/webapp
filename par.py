@@ -29,14 +29,51 @@ def extracted_name(data):
         return ext_name
     return None
 
+
 def extracted_education(data):
     # logic of this function, collect 10 elements after the word educaiton appears
+    cleaned_data = [item.strip().lower() for item in data]
     ext_education = []
-    starting_i = 0
-    for i in data:
-        if i == 'education':
-            starting_i = data.index(i)
-    for j in range(starting_i, (starting_i + 10), 1):
-        ext_education.append(data[j])
-    print(ext_education)
+    starting_i = -1
+    for i in range(len(cleaned_data) - 1):
+        if cleaned_data[i] == 'education':
+            starting_i = i
+    if starting_i != -1:
+        for j in range(starting_i, (starting_i + 20), 1):
+            ext_education.append(cleaned_data[j])
+        return ext_education
     return None
+
+
+def extracted_wrkexp(data):
+    # logic of this function, collect 10 elements after the word work experince appears
+    cleaned_data = [item.strip().lower() for item in data]
+    ext_work = []
+    starting_i = -1
+    for i in range(len(cleaned_data) - 1):
+        if ((cleaned_data[i] == 'work' and cleaned_data[i + 1] == 'experience') or
+                cleaned_data[i] == 'employment' or cleaned_data[i] == "experience"):
+            starting_i = i
+    if starting_i != -1:
+        for j in range(starting_i, (starting_i + 10), 1):
+            ext_work.append(cleaned_data[j])
+        return ext_work
+    return None
+
+
+def extracted_summary(data):
+    # logic of this function, collect 10 elements after summary or professional summary appears
+    cleaned_data = [item.strip().lower() for item in data]
+    ext_sum = []
+    starting_i = -1
+    for i in range(len(cleaned_data) - 1):
+        if cleaned_data[i] == 'summary' or cleaned_data[i] == 'professional summary':
+            starting_i = i
+    if starting_i != -1:
+        for j in range(starting_i + 1, (starting_i + 10), 1):
+            ext_sum.append(cleaned_data[j])
+        return ext_sum
+    else:
+        return None
+
+
