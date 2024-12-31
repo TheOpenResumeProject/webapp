@@ -2,7 +2,7 @@ from flask import Flask, request, render_template, jsonify
 from collections import Counter
 import re
 import json
-
+from extract import extracted_email, extracted_phoneNumber, extracted_name, extracted_education, extracted_wrkexp, extracted_summary
 
 app = Flask(__name__)
 
@@ -17,9 +17,9 @@ def editor():
     return render_template('editor.html')
 
 
-@app.route('/submit', methods=['Post'])
+@app.route('/submit', methods=['POST'])
 def submit_data():
-    from par import extracted_email, extracted_phoneNumber, extracted_name, extracted_education, extracted_wrkexp, extracted_summary
+
     data = request.json
     words = re.findall(r'\b\w+\b', data.lower())
     word_counts = Counter(words)
