@@ -64,11 +64,7 @@ def editor():
 def render_pdf():
     resume_data = request.get_json()
 
-    css_path = 'static/css/styles.css'
-    css_path_abs = os.path.abspath(css_path)
-
-    rendered_resume = render_template('template.html', resume=resume_data, css_path=css_path_abs)
-    path_to_pdf =  "generated_resume.pdf"
+    rendered_resume = render_template('template.html', resume=resume_data)
 
     options = {
         'no-images': '',
