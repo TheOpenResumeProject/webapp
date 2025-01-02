@@ -26,6 +26,7 @@
             if (fileData){
                 fileContentElement.textContent = `Uploaded file's Content: ${JSON.parse(fileData)}`;
                 //fileContentElement.textContent = `Uploaded file's Content: ${fileData}`;
+                console.log(typeof(fileData))
             } else {
                 fileContentElement.textContent = 'No file uploaded';
             }
@@ -35,7 +36,7 @@
                     headers: {
                         'Content-Type' : 'application/json'
                     },
-                    body: JSON.stringify(fileData) 
+                    body: fileData 
                 })
                 .then(response=> response.json())
                 .then(data => {

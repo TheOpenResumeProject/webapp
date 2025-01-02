@@ -21,15 +21,15 @@ def editor():
 def submit_data():
 
     data = request.json
-    words = re.findall(r'\b\w+\b', data.lower())
-    word_counts = Counter(words)
+    #words = re.findall(r'\b\w+\b', data.lower())
+    #word_counts = Counter(words)
     email = extracted_email(data)
     phoneNumber = extracted_phoneNumber(data)
     name = extracted_name(data)
     education = extracted_education(data)
     work = extracted_wrkexp(data)
     summary = extracted_summary(data)
-    print(f'Data: {data} , Email: {email}, Phone: {phoneNumber}, Name:{name}, Education: {education}, Summary : {summary}, Work Experience : {work}')
+    print(f'Data: , Email:{email} , Phone:{phoneNumber} , Name: {name}, Education: {education}, Summary : {summary}, Work Experience : {work}')
     return jsonify({"received_data": data, "email": email, "phone": phoneNumber})
 
 
