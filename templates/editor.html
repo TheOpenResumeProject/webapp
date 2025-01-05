@@ -12,12 +12,13 @@
         <p id="fileName">File name will be displayed here</p>
         <div id='pdfContent'></div>
         <button id = 'sendToBackEnd'> Send Data </button>
-
         <div>
             <h3> Extracted Information</h3>
             <p> Email extracted: <span id = 'extractedEmail'></span></p>
             <p> Phone Number extracted:  <span id = 'extractedPhone'></span></p>
         </div>
+
+        
         <script>
             const fileData = sessionStorage.getItem("content");
             const fileContentElement = document.getElementById('pdfContent');
@@ -26,18 +27,16 @@
             if (fileData){
                 fileContentElement.textContent = `Uploaded file's Content: ${JSON.parse(fileData)}`;
                 //fileContentElement.textContent = `Uploaded file's Content: ${fileData}`;
-            
             } else {
                 fileContentElement.textContent = 'No file uploaded';
             }
-
             document.getElementById('sendToBackEnd').addEventListener('click', function(){
                 fetch('/submit',{
                     method: 'POST',
                     headers: {
                         'Content-Type' : 'application/json'
                     },
-                    body: JSON.stringify(fileData) 
+                    body: fileData 
                 })
                 .then(response=> response.json())
                 .then(data => {
