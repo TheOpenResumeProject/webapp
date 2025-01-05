@@ -1,14 +1,9 @@
 
 import re
-import json
+
 
 
 def extracted_email(data):
-    if isinstance(data, list):
-        data = ' '.join(data)
-    if not isinstance(data, str):
-        raise ValueError("Input data must be a string or a list of strings")
-
     email = re.findall("[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+@[a-z]+.{4}", data.lower())
     if email:
         return email[0]
@@ -16,11 +11,6 @@ def extracted_email(data):
 
 
 def extracted_phoneNumber(data):
-    if isinstance(data, list):
-        data = ' '.join(data)
-    if not isinstance(data, str):
-        raise ValueError("Input data must be a string or a list of strings")
-
     phone = re.findall(r'\d{3}\W?\d{3}\W?\d{4}', data.lower())
     if phone:
         return phone[0]
@@ -28,12 +18,6 @@ def extracted_phoneNumber(data):
 
 
 def extracted_name(data):
-    #words = re.findall(r'\b\w+\b', data.lower())  # Extract words
-    if isinstance(data, list):
-        data = ' '.join(data)
-    if not isinstance(data, str):
-        raise ValueError("Input data must be a string or a list of strings")
-
     ext_name = []
     pattern = r'\b[A-Z][a-z]*\b|\b[A-Z]+\b'
     matches = list(re.finditer(pattern, data))
@@ -79,11 +63,7 @@ def extracted_summary(data):
     # logic of this function, collect 10 elements after summary or professional summary appears
     ext_sum = []
     starting_i = -1
-    print("data[3]:", data[3])
-    print("data: ", data)
-
     for i in range(len(data) - 1):
-        print(data[i].strip().lower())
         if data[i].strip().lower() == 'professional summary':
             starting_i = i
 
