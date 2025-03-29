@@ -1,0 +1,21 @@
+.img-thumbnail {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: border-color 0.3s ease;
+}
+
+.img-thumbnail.selected {
+  border-color: #007bff;
+}
+
+.selected-image-preview {
+  margin-top: 20px;
+}
+
+.selected-image-preview img {
+  max-width: 100%;
+  height: auto;
+}
