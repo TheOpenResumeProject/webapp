@@ -42,6 +42,8 @@ function updateCount(item, value) {
 }
 
 // Save textarea contents as a text file
+/*
+// temporarily disabling these features
 document.querySelector('#save a').onclick = function () {
     this.download = (filenameBox.value || 'browserpad.txt').replace(/^([^.]*)$/, "$1.txt");
     this.href = URL.createObjectURL(new Blob([document.querySelector('#textbox').value], { type: 'text/plain' }));
@@ -60,6 +62,7 @@ document.querySelector('#open input').onchange = function () {
     };
     reader.readAsText(this.files[0]); // this = input element
 };
+*/
 
 //Toggle Fullwidth vs 80 Column
 document.querySelector('#fullwidth').onchange = function () {

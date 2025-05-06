@@ -54,9 +54,10 @@
             <div class="col-7">
                 <h4>Generated Resume</h4>
                 <iframe src="{{ url_for('template') }}" title="Generated Resume" id="renderBoxElem"
-                 style="height:80vh; width:800px;border:1px dotted black;border-radius:5px;"></iframe>
+                 style="height:80vh;width:800px;border:1px dotted black;border-radius:5px;"></iframe>
                 <div class="form-group m-2">
-                    <button type="button" class="btn btn-secondary" id="generatePDFButton">Save to PDF</button>
+                    <button type="button" class="btn btn-secondary" id="generatePDFButton">Save to PDF (Server)</button>
+                    <button type="button" class="btn btn-secondary" id="generatePDFButtonFE">Save to PDF (Browser)</button>
                 </div>
             </div>
         </div>
@@ -111,6 +112,14 @@
 
     }
     applyBtnElem.addEventListener("click", getRenderedResume);
+
+	const printRenderedBtn = document.getElementById("generatePDFButtonFE");
+	printRenderedBtn.addEventListener("click", function(e){
+		const renderFrame = document.getElementsByTagName("iframe")[0];
+		const renderFrameContent = renderFrame.contentWindow;
+		renderFrame.focus();
+		renderFrameContent.print();
+	});
 
     const generatePDFBtnElem = document.getElementById("generatePDFButton");
     generatePDFBtnElem.addEventListener("click", function(e) {
