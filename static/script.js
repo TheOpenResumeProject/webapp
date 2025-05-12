@@ -1,5 +1,6 @@
 const fileInput = document.getElementById("myFile");
 
+fileInput.addEventListener("change", uploadFile);
 fileInput.addEventListener("change", handleFiles);
 
 function handleFiles(event) {
@@ -13,7 +14,7 @@ function handleFiles(event) {
             function(pdf) {
                 let textArray = [];
                 let promises = [];
-                for (let i = 1; i <= pdf.numPages; i++) {
+                for (let i = 0; i < pdf.numPages; i++) {
                     promises.push(extractText(pdf, i, textArray));
                 }
                 Promise.all(promises).then(() => {
@@ -21,6 +22,7 @@ function handleFiles(event) {
                 });
             });
     };
+
     fileReader.readAsArrayBuffer(file);
 }
 
@@ -36,5 +38,18 @@ function extractText(pdf, pageNumber, textArray) {
         })
         .catch(function(error) {
             console.error("Error reading file", error);
+        });
+}
+
+function uploadFile(event){
+    const file = event.target.files[0];
+    const formData = new FormData();
+    formData.append('file', file);
+
+        fetch('/upload',{
+            method:'POST',
+            body: formData,
+        }).catch((error)=>{
+            console.error("Error:", error)
         });
 }

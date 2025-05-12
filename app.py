@@ -19,7 +19,6 @@ def editor():
     return render_template('editor.html')
 
 
-# Folder to save uploaded files
 UPLOAD_FOLDER = 'uploads'
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
@@ -48,11 +47,13 @@ def submit_data():
         datastr = ' '.join(data)
     email = extracted_email(datastr)
     phoneNumber = extracted_phoneNumber(datastr)
+    '''
     name = extracted_name(datastr)
     education = extracted_education(data)
     work = extracted_wrkexp(data)
     summary = extracted_summary(data)
     #print(f'Data: {data}: , Email:{email} , Phone:{phoneNumber} , Name: {name}, Education: {education}, Summary : {summary}, Work Experience : {work}')
+    '''
     return jsonify({"received_data": data, "email": email, "phone": phoneNumber})
 
 

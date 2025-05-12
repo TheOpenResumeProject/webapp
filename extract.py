@@ -29,7 +29,7 @@ def extracted_name(data):
 
 
 def extracted_education(data):
-    # logic of this function, collect 10 elements after the word educaiton appears
+    # logic of this function, collect 10 elements after the word education appears
     cleaned_data = [item.strip().lower() for item in data]
     ext_education = []
     starting_i = -1
